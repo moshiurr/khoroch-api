@@ -1,1 +1,3 @@
 # khoroch-api
+
+This is the backend for the Khoroch App... 
