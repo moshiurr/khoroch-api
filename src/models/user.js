@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema({
 }, {timestamps: true})
 
 userSchema.statics.findByCredentials  = async (email, password, username)=>{
-    const user;
+    let user;
     if(email) user = await User.findOne({email: email})
     else user = await User.findOne({username: username})
 
@@ -67,7 +67,7 @@ userSchema.statics.findByCredentials  = async (email, password, username)=>{
 
 
     //change it in the final version
-    //add tokem functionality
+    //add token functionality
     return {
         email: user.email,
         username: user.username,
