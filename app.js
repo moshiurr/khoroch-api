@@ -18,7 +18,7 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("common"));
 
-app.use('/', userRouter);
+app.use('/api/', userRouter);
 
 
 app.listen(port, (req,res)=>{
