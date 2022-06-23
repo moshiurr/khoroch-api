@@ -5,6 +5,7 @@ const cors = require('cors')
 // dotenv file 
 require("dotenv").config();
 const userRouter = require('./src/routes/user.router');
+const khorochRouter = require('./src/routes/khoroch.router');
 
 //initializing the mongo database
 require('./src/db/db')
@@ -18,7 +19,8 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("common"));
 
-app.use('/api/', userRouter);
+app.use('/api/user', userRouter);
+app.use('/api/khoroch', khorochRouter);
 
 
 app.listen(port, (req,res)=>{
