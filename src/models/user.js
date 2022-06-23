@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -54,7 +55,20 @@ const userSchema = new mongoose.Schema({
 
 }, {timestamps: true})
 
-userSchema.statics.findByCredentials  = async (email, password, username)=>{
+// methods are available only for each instance. They are also called instance methods
+userSchema.methods.generateAuthToken = async function(){
+    const user = this;
+
+    const token = jwt.sign({_id: user._id},process.env.JWT_SECRETE);
+
+    user.tokens = user.tokens.concat({token});
+    await user.save();
+
+    return token;
+}
+
+// statics are available on entire model object. They are also called Model methods
+userSchema.statics.findByCredentials  = async (email, password)=>{
     let user;
     if(email) user = await User.findOne({email: email})
     else user = await User.findOne({username: username})
@@ -68,11 +82,7 @@ userSchema.statics.findByCredentials  = async (email, password, username)=>{
 
     //change it in the final version
     //add token functionality
-    return {
-        email: user.email,
-        username: user.username,
-        id: user._id
-    }
+    return user;
 }
 
 //this is a mongoose middleware that handles the hashing of passwords every time password field is modified
