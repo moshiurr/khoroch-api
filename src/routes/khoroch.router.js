@@ -46,6 +46,31 @@ router.get('/:khorochId', authMiddleware, async (req, res)=>{
 //TODO: route for adding user to a existing expense group
 router.post('/add-user/', authMiddleware, async (req, res)=>{
 
+      const {members, groupId} = req.body;
+
+      try {
+            let expenseGroup = await ExpenseGroup.findById(groupId);
+
+            if(!expenseGroup) throw new Error("Expense group not found");
+
+            //checking if all the members are valid or not
+            let areAllMembersActive = await ExpenseGroup.validateMembers(members);
+            if(!areAllMembersActive) throw new Error("One of the member is not valid");
+
+            // saving the new users inside the group using the model method
+            await expenseGroup.addNewMembers(members);
+            
+            return res.send({
+                  success: true,
+                  message: "Expense group updated with new members successfully"
+            })
+
+      } catch (error) {
+            return res.status(400).send({
+                  success: false,
+                  message: error.message
+            })
+      }
 });
 
 

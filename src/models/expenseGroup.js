@@ -31,5 +31,17 @@ expenseGroupSchema.statics.validateMembers = async (members) => {
     return true;
 }
 
+expenseGroupSchema.methods.addNewMembers = async function(members) {
+    let expenseGroup = this;
+
+    for(let i = 0; i < members.length; i++){
+        if(expenseGroup.members.includes(members[i])) continue;
+
+        expenseGroup.members.push(members[i]);
+    }
+
+    await expenseGroup.save();
+}
+
 const ExpenseGroup = mongoose.model("ExpenseGroup", expenseGroupSchema);
 module.exports = ExpenseGroup;
